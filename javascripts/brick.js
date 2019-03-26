@@ -4,8 +4,16 @@ var ctx = canvas.getContext('2d');
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('mousemove',mouseMoveHandler);
+document.addEventListener("click",onClickHandler);
 
-var interval = setInterval(draw,10);
+setInterval(draw,10);
+
+//start button
+var startBtn = false;
+var startBtnX = canvas.width/2-40;
+var startBtnY = canvas.height/2-15;
+var startBtnW = 80;
+var startBtnH = 30;
 
 //make a ball
 var x = canvas.width/2;
@@ -22,9 +30,9 @@ var leftPressed  = false;
 var rightPressed = false;
 
 //make a brick, 먼저 벽돌을 만들 때 어떤 속성이 필요한지를 생각한다.
-var brickColumnCount = 7;
-var brickRowCount = 3;
-var brickWidth = 76;
+var brickColumnCount = 9;
+var brickRowCount = 4;
+var brickWidth = 72;
 var brickHeight = 20;
 var brickPadding = 10;
 var brickOffsetTop = 30;
@@ -44,6 +52,12 @@ for(var c=0; c<brickColumnCount; c++) {
     // console.log('bricks 2',bricks[c][r]);
     }
 }
+
+// function drawStartBtn(){
+//     ctx.font = '30px Arial';
+//     ctx.fillText('게임시작', startBtnX, startBtnY+startBtnH);
+//     // ctx.fillStyle = '#DC2248';
+// }
 
 function drawBall(){
     ctx.beginPath();
@@ -82,6 +96,15 @@ function mouseMoveHandler(e){
     //relativeX는 캔버스 내의 마우스 위치
     if(relativeX > 0 && relativeX < canvas.width){
         paddleX = relativeX - paddleWidth/2;
+    }
+}
+
+function onClickHandler(e){
+    var clientX = e.clientX - canvas.offsetLeft;
+    var clientY = e.clientY - canvas.offsetTop;
+    if((clientX>startBtnX && clientX<startBtnX+startBtnW) &&
+        (clientY>startBtnY && clientY<startBtnY+startBtnH)){
+        startBtn = true;
     }
 }
 
@@ -137,13 +160,13 @@ function drawScore(){
 function drawLives(){
     ctx.font = '16px Arial';
     ctx.fillStyle = '#DC8C22';
-    ctx.fillText('남은 횟수: '+lives, canvas.width-30, 20);
+    ctx.fillText('남은 횟수: '+lives, canvas.width-100, 20);
 }
 
 function draw(){
-    setTimeout(function(){
-        requestAnimationFrame(draw);
+    if(startBtn){
         ctx.clearRect(0,0,canvas.width, canvas.height);
+        // drawStartBtn();
         drawBricks();
         drawBall();
         drawPaddle();
@@ -186,7 +209,10 @@ function draw(){
         // }
         x += dx;
         y += dy;
-    },1000/fps);
+        // requestAnimationFrame(draw);
+    }
 }
-
+ctx.font = '30px Calibri';
+ctx.fillText('START', startBtnX, startBtnY+startBtnH);
+// var interval = setInterval(draw, 10);
 draw();
